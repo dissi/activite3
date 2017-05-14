@@ -104,6 +104,51 @@ public class GrilleImpl implements Grille {
         return this.grille[x][y];
     }
 
-  
+    /**
+     * Test si une grille est terminee.
+     *
+     * @return true si la grille est complete
+     */
+    @Override
+    public final boolean complete() {
+//      Parcourir les lignes et colonnes et véfifier s'y a au moins
+//      une veleur EMPTY c'est à dire vide.
+        for (int x = 0; x < this.getDimension(); x++) {
+            for (int y = 0; y < this.getDimension(); y++) {
+                if (this.grille[x][y] == Grille.EMPTY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Test si une valeur est possible dans la grille par rapport a ce qu'elle
+     * contient deja.
+     *
+     * @param x position x dans la grille
+     * @param y position y dans la grille
+     * @param value valeur a mettre dans la case
+     * @throw IllegalArgumentException si x ou y sont hors bornes (0-8)
+     * @throw IllegalArgumentException si value n'est pas un caractere autorise
+     * ('1',...,'9',..)
+     * @return boolean
+     */
+    @Override
+    public final boolean possible(final int x, final int y, final char value) {
+//      si x ou y sont hors bornes (0-8)
+        if (x < 0 || x >= this.getDimension()
+                || y < 0 || y >= this.getDimension()) {
+            throw new IllegalArgumentException("Ligne ou colonne hors borne");
+        }
+//       S'assurer que la valeur n'est pas interdite
+        for (int i = 0; i < this.getDimension(); i++) {
+            if (Grille.possible[i] == value) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
