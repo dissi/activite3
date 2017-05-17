@@ -1,0 +1,269 @@
+JAVA PROFILE 1.0.1, created Wed May 17 11:17:13 2017
+
+Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  - Neither the name of Oracle nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Header for -agentlib:hprof (or -Xrunhprof) ASCII Output (JDK 5.0 JVMTI based)
+
+WARNING!  This file format is under development, and is subject to
+change without notice.
+
+This file contains the following types of records:
+
+THREAD START
+THREAD END      mark the lifetime of Java threads
+
+TRACE           represents a Java stack trace.  Each trace consists
+                of a series of stack frames.  Other records refer to
+                TRACEs to identify (1) where object allocations have
+                taken place, (2) the frames in which GC roots were
+                found, and (3) frequently executed methods.
+
+HEAP DUMP       is a complete snapshot of all live objects in the Java
+                heap.  Following distinctions are made:
+
+                ROOT    root set as determined by GC
+                CLS     classes 
+                OBJ     instances
+                ARR     arrays
+
+SITES           is a sorted list of allocation sites.  This identifies
+                the most heavily allocated object types, and the TRACE
+                at which those allocations occurred.
+
+CPU SAMPLES     is a statistical profile of program execution.  The VM
+                periodically samples all running threads, and assigns
+                a quantum to active TRACEs in those threads.  Entries
+                in this record are TRACEs ranked by the percentage of
+                total quanta they consumed; top-ranked TRACEs are
+                typically hot spots in the program.
+
+CPU TIME        is a profile of program execution obtained by measuring
+                the time spent in individual methods (excluding the time
+                spent in callees), as well as by counting the number of
+                times each method is called. Entries in this record are
+                TRACEs ranked by the percentage of total CPU time. The
+                "count" field indicates the number of times each TRACE 
+                is invoked.
+
+MONITOR TIME    is a profile of monitor contention obtained by measuring
+                the time spent by a thread waiting to enter a monitor.
+                Entries in this record are TRACEs ranked by the percentage
+                of total monitor contention time and a brief description
+                of the monitor.  The "count" field indicates the number of 
+                times the monitor was contended at that TRACE.
+
+MONITOR DUMP    is a complete snapshot of all the monitors and threads in 
+                the System.
+
+HEAP DUMP, SITES, CPU SAMPLES|TIME and MONITOR DUMP|TIME records are generated 
+at program exit.  They can also be obtained during program execution by typing 
+Ctrl-\ (on Solaris) or by typing Ctrl-Break (on Win32).
+
+--------
+
+THREAD START (obj=5000019f, id = 200001, name="main", group="main")
+THREAD END (id = 200001)
+TRACE 300130:
+	java.lang.ClassLoader.defineClass1(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:763)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:467)
+TRACE 300298:
+	java.io.FileOutputStream.writeBytes(FileOutputStream.java:Unknown line)
+	java.io.FileOutputStream.write(FileOutputStream.java:326)
+	java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
+	java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
+TRACE 300279:
+	java.util.Currency.getSymbol(Currency.java:506)
+	java.text.DecimalFormatSymbols.initialize(DecimalFormatSymbols.java:648)
+	java.text.DecimalFormatSymbols.<init>(DecimalFormatSymbols.java:113)
+	sun.util.locale.provider.DecimalFormatSymbolsProviderImpl.getInstance(DecimalFormatSymbolsProviderImpl.java:85)
+TRACE 300250:
+	java.lang.Object.getClass(Object.java:Unknown line)
+	com.sun.tools.javac.file.JavacFileManager.inferBinaryName(JavacFileManager.java:629)
+	com.sun.tools.javac.jvm.ClassReader.includeClassFile(ClassReader.java:2678)
+	com.sun.tools.javac.jvm.ClassReader.fillIn(ClassReader.java:2831)
+TRACE 300247:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:436)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:411)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+TRACE 300246:
+	java.lang.ClassLoader.addClass(ClassLoader.java:263)
+	java.lang.ClassLoader.defineClass1(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:763)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+TRACE 300240:
+	com.sun.tools.javac.resources.compiler.getContents(compiler.java:5)
+	java.util.ListResourceBundle.loadLookup(ListResourceBundle.java:195)
+	java.util.ListResourceBundle.handleGetObject(ListResourceBundle.java:130)
+	java.util.ResourceBundle.getObject(ResourceBundle.java:441)
+TRACE 300239:
+	java.lang.System.currentTimeMillis(System.java:Unknown line)
+	com.sun.tools.javac.file.ZipFileIndex.checkIndex(ZipFileIndex.java:173)
+	com.sun.tools.javac.file.ZipFileIndex.getFiles(ZipFileIndex.java:250)
+	com.sun.tools.javac.file.ZipFileIndexArchive.getFiles(ZipFileIndexArchive.java:70)
+TRACE 300238:
+	java.io.WinNTFileSystem.getLastModifiedTime(WinNTFileSystem.java:Unknown line)
+	java.io.File.lastModified(File.java:943)
+	com.sun.tools.javac.file.ZipFileIndex.<init>(ZipFileIndex.java:132)
+	com.sun.tools.javac.file.ZipFileIndexCache.getZipFileIndex(ZipFileIndexCache.java:100)
+TRACE 300237:
+	java.lang.ref.Finalizer.remove(Finalizer.java:61)
+	java.lang.ref.Finalizer.runFinalizer(Finalizer.java:93)
+	java.lang.ref.Finalizer.access$100(Finalizer.java:34)
+	java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:210)
+TRACE 300236:
+	java.lang.StringCoding$StringDecoder.decode(StringCoding.java:153)
+	java.lang.StringCoding.decode(StringCoding.java:193)
+	java.lang.String.<init>(String.java:426)
+	com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.readEntry(ZipFileIndex.java:665)
+TRACE 300235:
+	com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.buildIndex(ZipFileIndex.java:576)
+	com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.access$000(ZipFileIndex.java:483)
+	com.sun.tools.javac.file.ZipFileIndex.checkIndex(ZipFileIndex.java:191)
+	com.sun.tools.javac.file.ZipFileIndex.<init>(ZipFileIndex.java:136)
+TRACE 300229:
+	com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.readEntry(ZipFileIndex.java:613)
+	com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.buildIndex(ZipFileIndex.java:576)
+	com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.access$000(ZipFileIndex.java:483)
+	com.sun.tools.javac.file.ZipFileIndex.checkIndex(ZipFileIndex.java:191)
+TRACE 300297:
+	com.sun.tools.javac.comp.DeferredAttr.isDeferred(DeferredAttr.java:1099)
+	com.sun.tools.javac.comp.Attr.attribArgs(Attr.java:670)
+	com.sun.tools.javac.comp.Attr.visitApply(Attr.java:1816)
+	com.sun.tools.javac.tree.JCTree$JCMethodInvocation.accept(JCTree.java:1465)
+TRACE 300219:
+	java.io.FileInputStream.readBytes(FileInputStream.java:Unknown line)
+	java.io.FileInputStream.read(FileInputStream.java:255)
+	com.sun.tools.javac.util.BaseFileManager.makeByteBuffer(BaseFileManager.java:302)
+	com.sun.tools.javac.file.RegularFileObject.getCharContent(RegularFileObject.java:114)
+TRACE 300176:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:415)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	com.sun.tools.javac.main.JavaCompiler.<init>(JavaCompiler.java:372)
+TRACE 300174:
+	com.sun.tools.javac.comp.MemberEnter.<init>(MemberEnter.java:110)
+	com.sun.tools.javac.comp.MemberEnter.instance(MemberEnter.java:94)
+	com.sun.tools.javac.comp.Attr.<init>(Attr.java:115)
+	com.sun.tools.javac.comp.Attr.instance(Attr.java:102)
+TRACE 300173:
+	java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:145)
+	java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+TRACE 300172:
+	java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:411)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331)
+TRACE 300171:
+	com.sun.tools.javac.jvm.ClassReader.<init>(ClassReader.java:287)
+	com.sun.tools.javac.jvm.ClassReader.instance(ClassReader.java:249)
+	com.sun.tools.javac.main.JavaCompiler.<init>(JavaCompiler.java:348)
+	com.sun.tools.javac.main.JavaCompiler.instance(JavaCompiler.java:88)
+TRACE 300170:
+	com.sun.tools.javac.code.Type$ErrorType.<init>(Type.java:1800)
+	com.sun.tools.javac.code.Symtab.<init>(Symtab.java:408)
+	com.sun.tools.javac.code.Symtab.instance(Symtab.java:61)
+	com.sun.tools.javac.jvm.ClassReader.<init>(ClassReader.java:286)
+TRACE 300165:
+	java.lang.Object.<init>(Object.java:37)
+	java.io.InputStream.<init>(InputStream.java:45)
+	java.util.zip.ZipFile$ZipFileInputStream.<init>(ZipFile.java:694)
+	java.util.zip.ZipFile.getInputStream(ZipFile.java:360)
+TRACE 300299:
+	com.sun.tools.javac.code.Type.isErroneous(Type.java:390)
+	com.sun.tools.javac.code.Type$MethodType.isErroneous(Type.java:1184)
+	com.sun.tools.javac.code.Type$ForAll.isErroneous(Type.java:1425)
+	com.sun.tools.javac.comp.Attr.checkIdInternal(Attr.java:3537)
+TRACE 300146:
+	java.io.WinNTFileSystem.canonicalize0(WinNTFileSystem.java:Unknown line)
+	java.io.WinNTFileSystem.canonicalize(WinNTFileSystem.java:428)
+	java.io.File.getCanonicalPath(File.java:618)
+	java.io.File.getCanonicalFile(File.java:643)
+TRACE 300135:
+	java.util.zip.ZipFile.read(ZipFile.java:Unknown line)
+	java.util.zip.ZipFile.access$1400(ZipFile.java:60)
+	java.util.zip.ZipFile$ZipFileInputStream.read(ZipFile.java:717)
+	sun.misc.Resource.getBytes(Resource.java:124)
+TRACE 300132:
+	java.lang.ClassLoader.findBootstrapClass(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.findBootstrapClassOrNull(ClassLoader.java:1015)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:413)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:411)
+TRACE 300228:
+	com.sun.tools.javac.tree.JCTree$JCParens.<init>(JCTree.java:1657)
+	com.sun.tools.javac.tree.TreeMaker.Parens(TreeMaker.java:385)
+	com.sun.tools.javac.parser.JavacParser.parExpression(JavacParser.java:2301)
+	com.sun.tools.javac.parser.JavacParser.parseStatement(JavacParser.java:2483)
+TRACE 300106:
+	java.util.Properties.loadConvert(Properties.java:544)
+	java.util.Properties.load0(Properties.java:391)
+	java.util.Properties.load(Properties.java:341)
+	java.security.Security.initialize(Security.java:90)
+TRACE 300029:
+	java.io.WinNTFileSystem.canonicalize0(WinNTFileSystem.java:Unknown line)
+	java.io.WinNTFileSystem.canonicalize(WinNTFileSystem.java:428)
+	java.io.File.getCanonicalPath(File.java:618)
+	sun.usagetracker.UsageTrackerClient.registerUsage(UsageTrackerClient.java:390)
+CPU SAMPLES BEGIN (total = 34) Wed May 17 11:17:14 2017
+rank   self  accum   count trace method
+   1 11.76% 11.76%       4 300130 java.lang.ClassLoader.defineClass1
+   2  8.82% 20.59%       3 300298 java.io.FileOutputStream.writeBytes
+   3  2.94% 23.53%       1 300279 java.util.Currency.getSymbol
+   4  2.94% 26.47%       1 300250 java.lang.Object.getClass
+   5  2.94% 29.41%       1 300247 java.lang.ClassLoader.loadClass
+   6  2.94% 32.35%       1 300246 java.lang.ClassLoader.addClass
+   7  2.94% 35.29%       1 300240 com.sun.tools.javac.resources.compiler.getContents
+   8  2.94% 38.24%       1 300239 java.lang.System.currentTimeMillis
+   9  2.94% 41.18%       1 300238 java.io.WinNTFileSystem.getLastModifiedTime
+  10  2.94% 44.12%       1 300237 java.lang.ref.Finalizer.remove
+  11  2.94% 47.06%       1 300236 java.lang.StringCoding$StringDecoder.decode
+  12  2.94% 50.00%       1 300235 com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.buildIndex
+  13  2.94% 52.94%       1 300229 com.sun.tools.javac.file.ZipFileIndex$ZipDirectory.readEntry
+  14  2.94% 55.88%       1 300297 com.sun.tools.javac.comp.DeferredAttr.isDeferred
+  15  2.94% 58.82%       1 300219 java.io.FileInputStream.readBytes
+  16  2.94% 61.76%       1 300176 java.lang.ClassLoader.loadClass
+  17  2.94% 64.71%       1 300174 com.sun.tools.javac.comp.MemberEnter.<init>
+  18  2.94% 67.65%       1 300173 java.lang.ref.ReferenceQueue.remove
+  19  2.94% 70.59%       1 300172 java.net.URLClassLoader.findClass
+  20  2.94% 73.53%       1 300171 com.sun.tools.javac.jvm.ClassReader.<init>
+  21  2.94% 76.47%       1 300170 com.sun.tools.javac.code.Type$ErrorType.<init>
+  22  2.94% 79.41%       1 300165 java.lang.Object.<init>
+  23  2.94% 82.35%       1 300299 com.sun.tools.javac.code.Type.isErroneous
+  24  2.94% 85.29%       1 300146 java.io.WinNTFileSystem.canonicalize0
+  25  2.94% 88.24%       1 300135 java.util.zip.ZipFile.read
+  26  2.94% 91.18%       1 300132 java.lang.ClassLoader.findBootstrapClass
+  27  2.94% 94.12%       1 300228 com.sun.tools.javac.tree.JCTree$JCParens.<init>
+  28  2.94% 97.06%       1 300106 java.util.Properties.loadConvert
+  29  2.94% 100.00%       1 300029 java.io.WinNTFileSystem.canonicalize0
+CPU SAMPLES END
